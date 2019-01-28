@@ -21,15 +21,15 @@ $("#submitButton").click(function (event) {
     var firstTrainTime = $("#trainTime").val().trim();
     var trainFreq = parseInt($("#trainFreq").val().trim());
 
-    logIt();
-    function logIt() {
-        console.log("------------------------------------------")
-        console.log("Train Name: " + trainName);
-        console.log("Train Destination: " + trainDestination);
-        console.log("First Train Time: " + firstTrainTime);
-        console.log("Train Frequency: " + trainFreq);
-        console.log("------------------------------------------")
-    }
+    // logIt();
+    // function logIt() {
+    //     console.log("------------------------------------------");
+    //     console.log("Train Name: " + trainName);
+    //     console.log("Train Destination: " + trainDestination);
+    //     console.log("First Train Time: " + firstTrainTime);
+    //     console.log("Train Frequency: " + trainFreq);
+    //     console.log("------------------------------------------");
+    // }
 
     // Put the details of the new train in Firebase
     database.ref().push({
@@ -39,12 +39,11 @@ $("#submitButton").click(function (event) {
         trainFreqDB: trainFreq,
         addedDB: moment().format("LT"),
     })
+
+    $("form").trigger("reset")
 });
 
 database.ref().on("child_added", function (trainDBinfo) {
-
-    console.log(trainDBinfo.val().firstTrainTimeDB);
-    console.log(trainDBinfo.val().trainFreqDB + " minutes");
 
     $("tbody").append(
         '<tr>' +
