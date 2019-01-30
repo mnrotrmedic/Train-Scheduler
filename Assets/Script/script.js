@@ -44,15 +44,28 @@ $("#submitButton").click(function (event) {
 });
 
 database.ref().on("child_added", function (trainDBinfo) {
+    // Time of first arrival 
+    var converted = moment(trainDBinfo.val().firstTrainTimeDB, "hh:mm").subtract(1, "years");
+    // Convert first arrival to minute value for easier calc
+    var thaDiff = moment().diff(moment(converted), "minutes");
+    // calc minutes away of next train based on current time
+    var minsAway = trainDBinfo.val().trainFreqDB - (thaDiff % trainDBinfo.val().trainFreqDB);
+    // Next train arrival time is now plus minsAway
+    var nextArr = moment().add(minsAway, "minutes");
+    console.log((moment(nextArr).format("LT")));
+
+
 
     $("tbody").append(
         '<tr>' +
         '<td>' + '<img src="assets/images/train.png"> ' + trainDBinfo.val().trainNameDB + '</td>' +
         '<td>' + trainDBinfo.val().trainDestinationDB + '</td>' +
         '<td>' + trainDBinfo.val().trainFreqDB + " min(s)" + '</td>' +
-        // '<td>' + nextArrival + '</td>' +
+        '<td>' + (moment(nextArr).format("LT")) + '</td>' +
+        '<td>' + minsAway + '</td>' +
         '</tr>'
     )
+
 });
 
 
@@ -64,3 +77,4 @@ $(document).ready(function () {
         $("#timeUTC").text(moment.utc().format("LTS"));
     }, 1000);
 });
+
