@@ -53,14 +53,15 @@ database.ref().on("child_added", function (trainDBinfo) {
         '<td>' + minsAway + '</td>' +
         '</tr>'
     )
-
 });
 
 
 $(document).ready(function () {
     $("#timeNow").text(moment().format("LTS"));
+    $("#timeUTC").text(moment.utc().format("LT"));
     setInterval(function () {
         $("#timeNow").text(moment().format("LTS"));
+        $("#timeUTC").text(moment.utc().format("LT"));
     }, 1000);
 });
 
@@ -69,13 +70,22 @@ $(document).ready(function () {
 
 // function dbRefresh() {
 //     setInterval(function () {
-//         database.ref().on("val", function (updateDBinfo) {
-//             // $("tbody").
+//         database.ref().once("value", function (updateDBinfo) {
+//             // Time of first arrival 
+//             var converted = moment(trainDBinfo.val().firstTrainTimeDB, "hh:mm").subtract(1, "years");
+//             // Convert first arrival to minute value for easier calc
+//             var thaDiff = moment().diff(moment(converted), "minutes");
+//             // calc minutes away of next train based on current time
+//             var minsAway = trainDBinfo.val().trainFreqDB - (thaDiff % trainDBinfo.val().trainFreqDB);
+//             // Next train arrival time is now plus minsAway
+//             var nextArr = moment().add(minsAway, "minutes");
+
+//             // Add to table...
 //             $("tbody").append(
 //                 '<tr>' +
-//                 '<td>' + '<img src="assets/images/train.png"> ' + updateDBinfo.val().trainNameDB + '</td>' +
-//                 '<td>' + updateDBinfo.val().trainDestinationDB + '</td>' +
-//                 '<td>' + updateDBinfo.val().trainFreqDB + " min(s)" + '</td>' +
+//                 '<td>' + '<img src="assets/images/train.png"> ' + trainDBinfo.val().trainNameDB + '</td>' +
+//                 '<td>' + trainDBinfo.val().trainDestinationDB + '</td>' +
+//                 '<td>' + trainDBinfo.val().trainFreqDB + " min(s)" + '</td>' +
 //                 '<td>' + (moment(nextArr).format("LT")) + '</td>' +
 //                 '<td>' + minsAway + '</td>' +
 //                 '</tr>'
@@ -83,5 +93,8 @@ $(document).ready(function () {
 //         }, 1000 * 60)
 //     })
 // };
-// dbRefresh();
+
+$(document).ready(function () {
+    dbRefresh();
+});
 
